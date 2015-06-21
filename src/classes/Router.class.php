@@ -1,9 +1,9 @@
 <?php
 
-use Router\Actions\iAction;
+use Router\Actions\AbstractAction;
 use Router\Exceptions\RouteNotFoundException;
 
-require_once __DIR__ . '/actions/iAction.class.php';
+require_once __DIR__ . '/actions/AbstractAction.class.php';
 require_once __DIR__ . '/../classes/exceptions/RouteNotFoundException.class.php';
 
 class Router
@@ -16,14 +16,9 @@ class Router
         $this->basePath = $basePath;
     }
 
-    public function getRoutes()
-    {
-        return $this->routes;
-    }
-
     /**
      * @param string $path
-     * @param iAction $action
+     * @param AbstractAction $action
      */
     public function addRoute($path, $action)
     {
@@ -32,10 +27,10 @@ class Router
 
     /**
      * @param string $path
-     * @return iAction
+     * @return AbstractAction
      * @throws RouteNotFoundException
      */
-    public function getRoute($path)
+    public function getRouteByPath($path)
     {
         if (isset($this->routes[$path])) {
             return $this->routes[$path];
@@ -45,14 +40,20 @@ class Router
     }
 
     /**
-     * @return iAction|null
+     * @return AbstractAction|null
      */
     public function match()
     {
+        $request_method = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
         $request_uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
 
         try {
-            return $this->getRoute($request_uri);
+            $action = $this->getRouteByPath($request_uri);
+            if (!in_array($request_method, $action->getValidHttpMethods())) {
+                return null;
+            }
+
+            return $this->getRouteByPath($request_uri);
         } catch (RouteNotFoundException $ex) {
             return null;
         }

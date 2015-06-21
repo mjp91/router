@@ -2,21 +2,21 @@
 
 namespace Router\Actions;
 
-use Router\Exceptions\ActionFailedException;
+use Router\Exceptions\SecureActionFailedException;
 
 require_once __DIR__ . "/FileIncludeAction.class.php";
-require_once __DIR__ . "/../exceptions/ActionFailedException.class.php";
+require_once __DIR__ . "/../exceptions/SecureActionFailedException.class.php";
 
 class SecureFileIncludeAction extends FileIncludeAction {
 
     /**
-     * @throws ActionFailedException
+     * @throws SecureActionFailedException
      */
     public function doAction() {
         if($this->checkAuthenticated()) {
             parent::doAction();
         } else {
-            throw new ActionFailedException();
+            throw new SecureActionFailedException("Authentication failed");
         }
     }
 
