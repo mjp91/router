@@ -9,7 +9,7 @@ require_once __DIR__ . '/src/classes/actions/SecureAction.class.php';
 require_once __DIR__ . '/src/classes/exceptions/ActionFailedException.class.php';
 
 
-$_SESSION['user_id'] = "matt";
+$_SESSION['user_id'] = "mattp";
 
 $router = new Router("/router");
 
