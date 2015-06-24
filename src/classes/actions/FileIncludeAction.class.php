@@ -7,6 +7,14 @@ use Router\Exceptions\ActionFailedException;
 require_once __DIR__ . "/AbstractAction.class.php";
 require_once __DIR__ . "/../exceptions/ActionFailedException.class.php";
 
+/**
+ * Action class to include a file
+ *
+ * @author Matthew Pearsall <mjp91@live.co.uk>
+ *
+ * Class FileIncludeAction
+ * @package Router\Actions
+ */
 class FileIncludeAction extends AbstractAction
 {
     protected $file_uri;
@@ -17,9 +25,6 @@ class FileIncludeAction extends AbstractAction
         parent::__construct($validHttpMethods);
     }
 
-    /**
-     * @throws ActionFailedException
-     */
     public function doAction() {
         if(is_readable($this->file_uri)) {
             require $this->file_uri;
@@ -29,6 +34,8 @@ class FileIncludeAction extends AbstractAction
     }
 
     /**
+     * Returns the file URI this class includes
+     *
      * @return mixed
      */
     public function getFileUri()
@@ -37,6 +44,8 @@ class FileIncludeAction extends AbstractAction
     }
 
     /**
+     * Sets the file URI this class includes
+     *
      * @param mixed $file_uri
      */
     public function setFileUri($file_uri)

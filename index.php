@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * Example use of router, all requests are redirected to index.php and serviced
+ */
+
+use Router\Router;
 use Router\Actions\AbstractAction;
 use Router\Actions\FileIncludeAction;
 use Router\Actions\SecureFileIncludeAction;
@@ -9,7 +14,7 @@ use Router\Exceptions\ActionFailedException;
 require_once __DIR__ . '/src/classes/Router.class.php';
 require_once __DIR__ . '/src/classes/actions/AbstractAction.class.php';
 require_once __DIR__ . '/src/classes/actions/FileIncludeAction.class.php';
-require_once __DIR__ . '/src/classes/actions/SecureAction.class.php';
+require_once __DIR__ . '/src/classes/actions/SecureFileIncludeAction.class.php';
 require_once __DIR__ . '/src/classes/exceptions/ActionFailedException.class.php';
 require_once __DIR__ . '/src/classes/exceptions/SecureActionFailedException.class.php';
 

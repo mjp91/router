@@ -1,3 +1,4 @@
+<!-- Example HTML page -->
 <!DOCTYPE html>
 <html>
 <head>

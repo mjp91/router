@@ -1,11 +1,21 @@
 <?php
 
+namespace Router;
+
 use Router\Actions\AbstractAction;
 use Router\Exceptions\RouteNotFoundException;
 
 require_once __DIR__ . '/actions/AbstractAction.class.php';
 require_once __DIR__ . '/../classes/exceptions/RouteNotFoundException.class.php';
 
+/**
+ * Holds a dictionary of routes with functions to match a request with entries
+ *
+ * @author Matthew Pearsall <mjp91@live.co.uk>
+ *
+ * Class Router
+ * @package Router
+ */
 class Router
 {
     private $routes = array();
@@ -17,6 +27,8 @@ class Router
     }
 
     /**
+     * Adds a route to the dictionary
+     *
      * @param string $path
      * @param AbstractAction $action
      */
@@ -26,11 +38,13 @@ class Router
     }
 
     /**
+     * Retrieves a route from the dictionary by it's path definition
+     *
      * @param string $path
      * @return AbstractAction
      * @throws RouteNotFoundException
      */
-    public function getRouteByPath($path)
+    private function getRouteByPath($path)
     {
         if (isset($this->routes[$path])) {
             return $this->routes[$path];
@@ -40,15 +54,19 @@ class Router
     }
 
     /**
+     * Attempts to match the current request with a route in the dictionary
+     *
      * @return AbstractAction|null
      */
     public function match()
     {
         $request_method = filter_input(INPUT_SERVER, 'REQUEST_METHOD');
-        $request_uri = filter_input(INPUT_SERVER, 'REQUEST_URI');
+        // request string before first query parameter
+        $request_uri = strtok(filter_input(INPUT_SERVER, 'REQUEST_URI'), "?");
 
         try {
             $action = $this->getRouteByPath($request_uri);
+            // check action can be induced with request method
             if (!in_array($request_method, $action->getValidHttpMethods())) {
                 return null;
             }
