@@ -1,0 +1,7 @@
+{
+  "name": "mjp91/router",
+  "description": "Object oriented routing solution for PHP",
+  "require": {
+    "php": ">=5.3.0"
+  }
+}

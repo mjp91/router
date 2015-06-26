@@ -23,8 +23,8 @@ $_SESSION['user_id'] = "matt";
 
 $router = new Router("/router");
 
-$router->addRoute("/", new FileIncludeAction('home.php', array(AbstractAction::GET)));
-$router->addRoute("/about", new SecureFileIncludeAction('about.php', array(AbstractAction::GET, AbstractAction::POST)));
+$router->addRoute("/", new FileIncludeAction('examples/home.php', array(AbstractAction::GET)));
+$router->addRoute("/about", new SecureFileIncludeAction('examples/about.php', array(AbstractAction::GET, AbstractAction::POST)));
 
 $matchAction = $router->match();
 
