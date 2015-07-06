@@ -4,39 +4,50 @@
  * Example use of router, all requests are redirected to index.php and serviced
  */
 
-use Router\Router;
-use Router\Actions\AbstractAction;
-use Router\Actions\FileIncludeAction;
-use Router\Actions\SecureFileIncludeAction;
-use Router\Exceptions\SecureActionFailedException;
-use Router\Exceptions\ActionFailedException;
+use router\Router;
+use exceptions\ControllerNotFound;
+use exceptions\ActionNotFoundException;
+use exceptions\NotAuthenticatedException;
 
-require_once __DIR__ . '/src/classes/Router.class.php';
-require_once __DIR__ . '/src/classes/actions/AbstractAction.class.php';
-require_once __DIR__ . '/src/classes/actions/FileIncludeAction.class.php';
-require_once __DIR__ . '/src/classes/actions/SecureFileIncludeAction.class.php';
-require_once __DIR__ . '/src/classes/exceptions/ActionFailedException.class.php';
-require_once __DIR__ . '/src/classes/exceptions/SecureActionFailedException.class.php';
+require_once __DIR__ . '/src/autoload.php';
 
-
-$_SESSION['user_id'] = "matt";
+define("CONTROLLER_NS", "Controller\\");
 
 $router = new Router("/router");
 
-$router->addRoute("/", new FileIncludeAction('examples/home.php', array(AbstractAction::GET)));
-$router->addRoute("/about", new SecureFileIncludeAction('examples/about.php', array(AbstractAction::GET, AbstractAction::POST)));
+// Controller = DefaultController, Action = doAction
+$router->addRoute("/", 'default#do', [Router::GET]);
 
 $matchAction = $router->match();
 
 if (isset($matchAction)) {
+    $action_array = explode("#", $matchAction['action']);
+    $controller_str = CONTROLLER_NS . ucfirst($action_array[0]) . 'Controller';
+    $action_str = $action_array[1] . 'Action';
+
     try {
-        $matchAction->doAction();
-    } catch (SecureActionFailedException $ex) {
-        http_response_code(403);
-        echo $ex->getMessage();
-    } catch (ActionFailedException $ex) {
+        if (class_exists($controller_str)) {
+            $controller = new $controller_str();
+            if (method_exists($controller, $action_str)) {
+                $controller->$action_str();
+            } else {
+                throw new ActionNotFoundException();
+            }
+        } else {
+            throw new ControllerNotFound();
+        }
+    } catch (ControllerNotFound $ex) {
         http_response_code(500);
-        echo $ex->getMessage();
+        echo "Controller not found";
+        exit();
+    } catch (ActionNotFoundException $ex) {
+        http_response_code(500);
+        echo "Action not found";
+        exit();
+    } catch (NotAuthenticatedException $ex) {
+        http_response_code(403);
+        echo "Not authenticated";
+        exit();
     }
 } else {
     http_response_code(404);

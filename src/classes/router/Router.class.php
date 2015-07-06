@@ -1,12 +1,9 @@
 <?php
 
-namespace Router;
+namespace router;
 
-use Router\Actions\AbstractAction;
-use Router\Exceptions\RouteNotFoundException;
+use exceptions\RouteNotFoundException;
 
-require_once __DIR__ . '/actions/AbstractAction.class.php';
-require_once __DIR__ . '/../classes/exceptions/RouteNotFoundException.class.php';
 
 /**
  * Holds a dictionary of routes with functions to match a request with entries
@@ -14,10 +11,15 @@ require_once __DIR__ . '/../classes/exceptions/RouteNotFoundException.class.php'
  * @author Matthew Pearsall <mjp91@live.co.uk>
  *
  * Class Router
- * @package Router
+ * @package router
  */
 class Router
 {
+    const GET = 'GET';
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const DELETE = 'DELETE';
+
     private $routes = array();
     private $basePath;
 
@@ -30,18 +32,20 @@ class Router
      * Adds a route to the dictionary
      *
      * @param string $path
-     * @param AbstractAction $action
+     * @param string $action
+     * @param array $validHTTPMethods
      */
-    public function addRoute($path, $action)
+    public function addRoute($path, $action, $validHTTPMethods)
     {
-        $this->routes[$this->basePath . $path] = $action;
+        $this->routes[$this->basePath . $path]['action'] = $action;
+        $this->routes[$this->basePath . $path]['methods'] = $validHTTPMethods;
     }
 
     /**
      * Retrieves a route from the dictionary by it's path definition
      *
      * @param string $path
-     * @return AbstractAction
+     * @return string
      * @throws RouteNotFoundException
      */
     private function getRouteByPath($path)
@@ -56,7 +60,7 @@ class Router
     /**
      * Attempts to match the current request with a route in the dictionary
      *
-     * @return AbstractAction|null
+     * @return array|null
      */
     public function match()
     {
@@ -65,13 +69,13 @@ class Router
         $request_uri = strtok(filter_input(INPUT_SERVER, 'REQUEST_URI'), "?");
 
         try {
-            $action = $this->getRouteByPath($request_uri);
+            $route = $this->getRouteByPath($request_uri);
             // check action can be induced with request method
-            if (!in_array($request_method, $action->getValidHttpMethods())) {
+            if (!in_array($request_method, $route['methods'])) {
                 return null;
             }
 
-            return $this->getRouteByPath($request_uri);
+            return $route;
         } catch (RouteNotFoundException $ex) {
             return null;
         }

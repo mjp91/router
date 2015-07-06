@@ -1,6 +1,6 @@
 <?php
 
-namespace Router\Exceptions;
+namespace exceptions;
 
 /**
  * Represents a route not being found in the dictionary
@@ -8,7 +8,7 @@ namespace Router\Exceptions;
  * @author Matthew Pearsall <mjp91@live.co.uk>
  *
  * Class RouteNotFoundException
- * @package Router\Exceptions
+ * @package exceptions
  */
 class RouteNotFoundException extends \Exception {
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Router\Exceptions;
+namespace exceptions;
 
 /**
  * Represents an Action failing to complete
@@ -8,7 +8,7 @@ namespace Router\Exceptions;
  * @author Matthew Pearsall <mjp91@live.co.uk>
  *
  * Class ActionFailedException
- * @package Router\Exceptions
+ * @package exceptions
  */
 class ActionFailedException extends \Exception {
 
